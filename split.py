@@ -8,7 +8,8 @@ def blank_image(contour):
     blank_image = 255 * np.ones((h,w,3), np.uint8)
     cv2.drawContours(blank_image, [contour], 0, (0,0,0), -1, offset = (-x, -y))
     gray = cv2.cvtColor(blank_image, cv2.COLOR_BGR2GRAY)
-    return cv2.resize(gray,(out_size, out_size), interpolation=cv2.INTER_AREA)
+    resized = cv2.resize(gray,(out_size, out_size), interpolation=cv2.INTER_AREA)
+    return resized
 
     
 def sort_contours(cnts):
@@ -34,7 +35,7 @@ def get_contours(path):
     letters = []
     for idx, contour in enumerate(contours):
         (x, y, w, h) = cv2.boundingRect(contour)
-        if hierarchy[0][idx][3] != -1 and cv2.contourArea(contour)> 250:
+        if hierarchy[0][idx][3] == 0 :
             true_contours.append(contour)
             cv2.rectangle(output, (x, y), (x + w, y + h), (70, 0, 0), 1)
             letter_crop = gray[y:y + h, x:x + w]
