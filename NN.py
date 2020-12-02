@@ -140,6 +140,10 @@ def detect_expression(symbols, contours):
         i+=1
 
     return result
+mj = 0
+def predict_letter_rect(letter_rect):
+    resized = cv2.resize(letter_rect,(out_size, out_size), interpolation=cv2.INTER_AREA)
+    return model.predict(resized.reshape(1, out_size * out_size))
 
 def predict_image(path):
     (contours, hierarchy, letters_rect, output) = split.get_contours(path)
@@ -149,11 +153,10 @@ def predict_image(path):
     result = []
     for i in range(len(contours)):
         blank_image = split.blank_image(contours[i])
-        #cv2.imshow(str(i),letters_rect[i][2])
         c = model.predict(blank_image.reshape(1, out_size*out_size))
         char_result = names[np.argmax(c)]
         symbols.append(char_result)
-        symbols_with_rect.append(names[np.argmax(model.predict(letters_rect[i][2].reshape(1, out_size*out_size)))])
+        symbols_with_rect.append(names[np.argmax(predict_letter_rect(letters_rect[i][2]))])
     for i in range(len(symbols)):
         if symbols[i] == "sqrt":
             symbols_with_rect[i] = "sqrt"
@@ -170,4 +173,4 @@ def predict_image(path):
         return (output,result_string,answer)
     except:
         return (output,result_string,"Ошибка вычисления")
-train("B:\\sem7\\ro\\Recognition-pattern\\ultra_last_model.h5", 10, 2)
+#train("B:\\sem7\\ro\\Recognition-pattern\\ultra_last_model.h5", 10, 2)

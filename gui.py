@@ -27,7 +27,7 @@ class Application(tk.Frame):
         filename = askopenfilename(filetypes=[("Image files", ".jpg .png")])
         img = ImageTk.PhotoImage(Image.open(filename))
         self.open_img(filename)
-        NN.define_model()
+        NN.define_model("B:\\sem7\\ro\\Recognition-pattern\\ultra_last_model.h5")
         result = NN.predict_image(filename)
         self.open_output(result)
     
