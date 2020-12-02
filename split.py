@@ -1,14 +1,19 @@
 import cv2
 import numpy as np
 from numpy.core.fromnumeric import sort
-out_size = 28
+out_size = 32
 #j = 0
 def blank_image(contour):
     (x, y, w, h) = cv2.boundingRect(contour)
     blank_image = 255 * np.ones((h,w,3), np.uint8)
     cv2.drawContours(blank_image, [contour], 0, (0,0,0), -1, offset = (-x, -y))
     gray = cv2.cvtColor(blank_image, cv2.COLOR_BGR2GRAY)
-    resized = cv2.resize(gray,(out_size, out_size), interpolation=cv2.INTER_AREA)
+    resized = cv2.resize(gray,(out_size, out_size))#, interpolation=cv2.INTER_AREA)
+    #global j
+    #cv2.imshow(str(j), resized)
+    #j+=1
+    resized = np.asarray(resized)
+    resized.resize(1, out_size, out_size, 1)
     return resized
 
     
@@ -24,10 +29,10 @@ def sort_contours(cnts):
 
 def get_contours(path):
     img = cv2.imread(path, 1)
-    img = cv2.medianBlur(img,3)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-    img_erode = cv2.erode(thresh, np.ones((1,1), np.uint8), iterations=1)
+    gray = cv2.medianBlur(gray,7)
+    thresh = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,3)
+    img_erode = cv2.erode(thresh, np.ones((3,3), np.uint8), iterations=1)
     #Инициализация символов
     contours, hierarchy = cv2.findContours(img_erode, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     true_contours = []
@@ -35,7 +40,7 @@ def get_contours(path):
     letters = []
     for idx, contour in enumerate(contours):
         (x, y, w, h) = cv2.boundingRect(contour)
-        if hierarchy[0][idx][3] == 0 :
+        if hierarchy[0][idx][3] == 0:
             true_contours.append(contour)
             cv2.rectangle(output, (x, y), (x + w, y + h), (70, 0, 0), 1)
             letter_crop = gray[y:y + h, x:x + w]

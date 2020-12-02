@@ -5,6 +5,7 @@ from threading import local
 from types import new_class
 
 from google.protobuf.message import Error
+from numpy.core.fromnumeric import resize
 import split
 import char_handler
 import polska
@@ -26,7 +27,7 @@ def normalize_img(image, label):
 
 
 #параметры сети
-out_size=28 # размер изображения
+out_size=32 # размер изображения
 n_input = out_size * out_size
 n_hidden_1 = 512 #первый скрытый 
 n_hidden_2 = 256 #второй скрытй
@@ -143,17 +144,19 @@ def detect_expression(symbols, contours):
 mj = 0
 def predict_letter_rect(letter_rect):
     resized = cv2.resize(letter_rect,(out_size, out_size), interpolation=cv2.INTER_AREA)
-    return model.predict(resized.reshape(1, out_size * out_size))
+    resized = np.asarray(resized)
+    resized.resize(1, out_size, out_size, 1)
+    return model.predict(resized)#.reshape(-1, out_size, out_size, 1))
 
 def predict_image(path):
     (contours, hierarchy, letters_rect, output) = split.get_contours(path)
-    names=['-','(',')','+', '0','1','2','3','4','5','6','7','8','9',':','pi','sqrt','*']
+    names=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '/', '*', '(', ')', '!', 'pi', 'sqrt']
     symbols = []
     symbols_with_rect = []
     result = []
     for i in range(len(contours)):
         blank_image = split.blank_image(contours[i])
-        c = model.predict(blank_image.reshape(1, out_size*out_size))
+        c = model.predict(blank_image)#.reshape(1, out_size*out_size))
         char_result = names[np.argmax(c)]
         symbols.append(char_result)
         symbols_with_rect.append(names[np.argmax(predict_letter_rect(letters_rect[i][2]))])

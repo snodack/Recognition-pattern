@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Tk
+from tkinter.constants import END
 from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfilename
 import NN
@@ -11,6 +12,13 @@ class Application(tk.Frame):
         self.master = master
         self.pack()
         self.create_widgets()
+        self.input_panel = tk.Label(root)
+        self.output_panel = tk.Label(root)
+        self.tk_label = tk.Text(root, height=10, width=30)
+        self.input_panel.pack()
+        self.output_panel.pack()
+        self.tk_label.pack()
+        NN.define_model("B:\\sem7\\ro\\Recognition-pattern\\vlad_model")
 
     def create_widgets(self):
         self.get_path_button = tk.Button(self)
@@ -27,28 +35,26 @@ class Application(tk.Frame):
         filename = askopenfilename(filetypes=[("Image files", ".jpg .png")])
         img = ImageTk.PhotoImage(Image.open(filename))
         self.open_img(filename)
-        NN.define_model("B:\\sem7\\ro\\Recognition-pattern\\ultra_last_model.h5")
         result = NN.predict_image(filename)
         self.open_output(result)
     
     def open_img(self,path):
+        self.input_image = None
         img = Image.open(path)
         img = img.resize((400, 200), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
-        panel = tk.Label(root, image=img)
-        panel.image = img
-        panel.pack()
+        self.input_panel.configure(image = img)
+        self.input_panel.image = img
+
     
     def open_output(self, result):
-        image = Image.fromarray(result[0])
-        image = image.resize((400, 200), Image.ANTIALIAS)
-        img = ImageTk.PhotoImage(image)
-        panel = tk.Label(root, image=img)
-        panel.output_image = img
-        panel.pack()
-        T = tk.Text(root, height=10, width=30)
-        T.insert(tk.END, result[1] + " = " +  str(result[2]))
-        T.pack()
+        img = Image.fromarray(result[0])
+        img = img.resize((400, 200), Image.ANTIALIAS)
+        img = ImageTk.PhotoImage(img)
+        self.output_panel.configure(image = img)
+        self.output_panel.image = img
+        self.tk_label.delete('1.0', END)
+        self.tk_label.insert(tk.END, result[1] + " = " +  str(result[2]))
 
 
 
