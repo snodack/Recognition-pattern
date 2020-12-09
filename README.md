@@ -43,5 +43,4 @@ polska.py | Код польской нотации
 * pyinstaller
 
 И введите следующее в cmd<br>
-`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter/*.png;letter" --add-data "model3;model3" -D --noconsole gui.py`<br>
-После создания папки dist скопировать в неё папки: model3 и letter 
+`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter/*.png;letter" --add-data "model3;model3" -D --noconsole gui.py`
