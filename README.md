@@ -39,9 +39,8 @@ polska.py | Код польской нотации
 * PIL
 * tenserflow
 * cv2
-* matplotlib
 * pypiwin32
 * pyinstaller
 
 И введите следующее в cmd<br>
-`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter/*.png;letter" --add-data "model3;model3" -D --noconsole gui.py`
+`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter/*.png;letter" --add-data "model3;model3" -F --noconsole gui.py`
