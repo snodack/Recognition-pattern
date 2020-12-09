@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfilename
 import main
 import cv2
+import sys
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -28,8 +29,7 @@ class Application(tk.Frame):
         self.get_path_button["command"] = self.get_path
         self.get_path_button.pack(side="right")
 
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=self.master.destroy)
+        self.quit = tk.Button(self, text="QUIT", fg="red",command=sys.exit)
         self.quit.pack(side="bottom")
 
     def get_path(self):
@@ -62,11 +62,12 @@ class Application(tk.Frame):
         img = ImageTk.PhotoImage(img)
         self.formula_panel.configure(image = img)
         self.formula_panel.image = img
-    
-    def quit(self):
-        self.master.destroy()
 
 
 root = tk.Tk()
+def on_closing():
+    sys.exit()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 app = Application(master=root)
 app.mainloop()
