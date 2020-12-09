@@ -1,11 +1,11 @@
-import train
 import cv2
 import numpy as np
 import tensorflow as tf
 import polska
 import formulapainter
+import tensorflow.keras as keras
 
-model = train.load_model("model3")
+model = keras.models.load_model("model3")
 
 labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '/', '*', '(', ')', '!', 'pi', 'sqrt', 'sin', 'cos', 'tan']
 
