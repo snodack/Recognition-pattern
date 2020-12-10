@@ -1,0 +1,12 @@
+# visual code user settings
+.vscode/
+
+# pyinstaller build folders
+dist/
+build/
+
+# pyinstaller build files
+*.spec
+
+# python cache
+__pycache__/
