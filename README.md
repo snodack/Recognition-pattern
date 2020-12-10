@@ -22,6 +22,7 @@ screenshots/ | Скриншоты проекта
 NN.py | Код для тренировки модели
 formulapainter.py | Код для отрисовки формул
 gui.py | Программа для запуска
+converter.py | Код конвертера модели keras в модель tflite
 main.py | Код распознования выражения с изображений
 polska.py | Код польской нотации
 ## Способ запуска
@@ -43,4 +44,4 @@ polska.py | Код польской нотации
 * pyinstaller
 
 И введите следующее в cmd<br>
-`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter/*.png;letter" --add-data "model3;model3" -D --noconsole gui.py`
+`pyinstaller --add-data "main.py;." --add-data "formulapainter.py;." --add-data "letter;letter" --add-data "model.tflite;." --exclude-module tensorflow --noconsole -D gui.py`
