@@ -1,16 +1,16 @@
 import cv2
 import numpy as np
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import polska
 import formulapainter
-import tensorflow.keras as keras
 
-model = keras.models.load_model("model3")
+interpreter = tflite.Interpreter(model_path="model.tflite")
+interpreter.allocate_tensors()
+
 
 labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '/', '*', '(', ')', '!', 'pi', 'sqrt', 'sin', 'cos', 'tan']
 
 image_width = 32
-
 
 def image_resize(image, width, height, ratio=False):
     dim = None
@@ -46,7 +46,23 @@ def predict(cv_image, ratio=False):
     array_image = np.asarray(gray_image)
     array_image = np.divide(array_image, 255)
     array_image.resize(1, image_width, image_width, 1)
-    answer = model.predict(array_image)[0]
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    # Test the model on input data.
+    input_shape = input_details[0]['shape']
+    print(input_shape)
+
+    # Use same image as Keras model
+    input_data = np.array(array_image, dtype=np.float32)
+    interpreter.set_tensor(input_details[0]['index'], input_data)
+
+    interpreter.invoke()
+
+    # The function `get_tensor()` returns a copy of the tensor data.
+    # Use `tensor()` in order to get a pointer to the tensor.
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    answer = output_data[0]
     label = [str(labels[i]) + ': ' + str(int(answer[i]*10000)/100) + "%" for i in np.argsort(answer)[::-1]]
     probs = [i for i in np.argsort(answer)[::-1]]
     best = [str(labels[i]) for i in np.argsort(answer)[::-1]][0]
@@ -266,8 +282,8 @@ def formula_to_image(image_path="",image=None):
     result = "Ошибка"
     try:
         result = polska.polska(output)
-    except:
-        print("Ошибка")
+    except Exception as e:
+        print(e)
     formula = "Ошибка"
     try:
         output_copy = list(output)
@@ -276,8 +292,8 @@ def formula_to_image(image_path="",image=None):
             for c in str(result):
                 output_copy.append(c)
         formula = formulapainter.draw_formula(output_copy)
-    except:
-        print("Ошибка")
+    except Exception as e:
+        print(e)
     #cv2.imshow("image", image)
     #cv2.waitKey(0)
     return (image, "".join(output), result, formula)
