@@ -29,7 +29,7 @@ polska.py | Код польской нотации
 ## Способ запуска
 Для начала нужно установить Python 3.8 и следующие библиотеки:
 * PIL
-* tenserflow
+* tensorflow
 * cv2
 * matplotlib
 
@@ -39,7 +39,7 @@ polska.py | Код польской нотации
 ## Компиляция в .exe файл
 Для начала нужно установить Python 3.8 и следующие библиотеки:
 * PIL
-* tenserflow
+* tensorflow
 * cv2
 * pypiwin32
 * pyinstaller
